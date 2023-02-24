@@ -116,7 +116,7 @@ class AwsPollyClient:
         words = []
 
         for t in tokens:
-            words += filter(lambda s: len(s) > 0, t)
+            words += list(filter(lambda s: len(s) > 0, t))
 
         actions = []
         i = 0
@@ -156,7 +156,7 @@ class AwsPollyClient:
             sys.exit(-1)
 
         # find the times to play beginnings of words, so the actions can be spliced in.
-        word_times = filter(lambda l: l["type"] == "word", x_sheet)
+        word_times = list(filter(lambda l: l["type"] == "word", x_sheet))
         # behavior_timing will be the list of visemes and actions in order by time
         # behavior_timing will collect also information about word timing
         behavior_timing = []
@@ -199,7 +199,7 @@ class AwsPollyClient:
                 l["time"],
                 VISEMES_TRANSLATION[l["value"]]
             ],
-            filter(lambda l: l["type"] == "viseme", x_sheet)
+            list(filter(lambda l: l["type"] == "viseme", x_sheet))
         )
         for v in visemes:
             behavior_timing.append(
@@ -217,9 +217,7 @@ class AwsPollyClient:
     @staticmethod
     def get_text_without_actions(text):
         return ''.join(
-            filter(
-                lambda s: "*" not in s, AwsPollyClient._split_by_actions(text)
-            )
+            list(filter(lambda s: "*" not in s, AwsPollyClient._split_by_actions(text)))
         )
 
     @staticmethod

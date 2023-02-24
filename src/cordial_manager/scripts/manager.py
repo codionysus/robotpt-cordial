@@ -231,9 +231,9 @@ class CordialManager:
 
     def _get_visemes_message(self, visemes_to_play):
         return FaceRequest(
-            visemes=map(lambda b: b["id"], visemes_to_play),
-            times=map(lambda b: b["start"], visemes_to_play),
-            viseme_ms=self._viseme_play_speed,
+            visemes=list(map(lambda b: b["id"], visemes_to_play)),
+            times=list(map(lambda b: b["start"], visemes_to_play)),
+            viseme_ms=int(self._viseme_play_speed),
         )
 
     def _delay_publishing_gestures(

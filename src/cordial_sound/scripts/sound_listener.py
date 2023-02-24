@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.8
+#!/usr/bin/env python3
 
 import rospy
 import pyaudio
@@ -16,7 +16,7 @@ def get_speaker_device_index():
     p = pyaudio.PyAudio()
     for i in range(p.get_device_count()):
         device = p.get_device_info_by_index(i)
-        if device['name'] == 'sysdefault':
+        if 'bcm2835 Headphones' in device['name']:
             return i
 
 

@@ -146,11 +146,7 @@ class AwsPollyClient:
         # get json of times to play visemes and words (called an exposure sheet or x-sheet in animation)
         if "AudioStream" in response:
             with closing(response["AudioStream"]) as stream:
-                x_sheet = [
-                    json.loads(text)
-                    for text in stream.read().split('\n')
-                    if text != ''
-                ]
+                x_sheet = [ json.loads(text) for text in stream.read().decode().split('\n') if text != '']
         else:
             print("Could not stream audio")
             sys.exit(-1)

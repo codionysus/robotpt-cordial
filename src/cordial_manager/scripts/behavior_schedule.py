@@ -44,10 +44,11 @@ class BehaviorSchedule:
 
     @staticmethod
     def _filter_behaviors_by_type(behavior_timings, desired_type):
-        return filter(
+        data = filter(
             lambda ele: ele["type"] == desired_type,
             behavior_timings,
         )
+        return list(data)
 
     @staticmethod
     def _get_behaviors_with_longer_durations(behavior_timings, min_duration_in_seconds=0.05):

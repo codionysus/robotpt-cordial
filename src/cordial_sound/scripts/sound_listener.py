@@ -3,7 +3,7 @@
 import rospy
 import pyaudio
 import time
-
+from qt_respeaker_app.srv import *
 from cordial_msgs.msg import Sound
 
 
@@ -26,7 +26,7 @@ SPEAKER_DEVICE_INDEX = get_speaker_device_index()
 def play_sound(data):
 
     rospy.loginfo("Sound received")
-
+    
     p = pyaudio.PyAudio()
 
     """
@@ -34,6 +34,7 @@ def play_sound(data):
     and restarting the node. 
     """
     try:
+        resp = configMic("AGCGAIN", 1)
         stream = p.open(
             format=data.format,
             channels=data.num_channels,
@@ -43,19 +44,25 @@ def play_sound(data):
             output_device_index=SPEAKER_DEVICE_INDEX,
         )
         stream.write(data.data)
-        time.sleep(1)
-        stream.stop_stream()
+        while stream.is_active():
+            resp = configMic("AGCGAIN", 100)
+            time.sleep(0.5)
+            stream.stop_stream()
 
         stream.close()
         p.terminate()
     except IOError:
         rospy.signal_shutdown("Audio device appears to be busy")
 
+    rospy.loginfo("Sound played!")
 
 if __name__ == '__main__':
 
 
     rospy.init_node('sound_listener')
+    configMic = rospy.ServiceProxy('/qt_respeaker_app/tuning/set', tuning_set)
     rospy.Subscriber(rospy.get_param('cordial_sound/play_stream_topic'), Sound, play_sound)
+    rospy.wait_for_service('qt_respeaker_app/tuning/set')
+    resp = configMic("AGCONOFF", 0)
     rospy.spin()
 
